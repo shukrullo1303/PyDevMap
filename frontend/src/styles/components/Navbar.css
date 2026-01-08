@@ -1,0 +1,142 @@
+.navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+}
+
+.search-form {
+    flex: 1;
+    display: none;
+    max-width: 400px;
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-base);
+    font-size: var(--font-size-sm);
+    transition: border-color var(--transition-fast);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+}
+
+@media (min-width: 768px) {
+    .search-form {
+        display: block;
+    }
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: opacity var(--transition-fast);
+}
+
+.nav-user:hover {
+    opacity: 0.7;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary-600), var(--accent-500));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+}
+
+.user-name {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+}
+
+@media (max-width: 640px) {
+    .search-form {
+        display: none;
+    }
+
+    .navbar-content {
+        gap: var(--space-base);
+    }
+
+    .user-name {
+        display: none;
+    }
+}
+
+.mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: var(--font-size-xl);
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .mobile-toggle {
+        display: block;
+    }
+
+    .nav-right {
+        display: none;
+    }
+}
+
+.mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-base);
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    border-top: 1px solid var(--border);
+}
+
+@media (min-width: 769px) {
+    .mobile-menu {
+        display: none;
+    }
+}
+
+.mobile-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: var(--space-base);
+    border-radius: var(--radius-base);
+    transition: background-color var(--transition-fast);
+}
+
+.mobile-link:hover {
+    background-color: var(--primary-50);
+    color: var(--primary-600);
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    /* Brandni chapga, qolganini o'ngga suradi */
+    align-items: center;
+    /* Hammasini vertikal markazda tekislaydi */
+    width: 100%;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Tugmalar orasidagi masofa */
+    margin-left: auto;
+    /* Agar qidiruv formasi bo'lsa ham, buni o'ngga suradi */
+}

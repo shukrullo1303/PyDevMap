@@ -1,0 +1,38 @@
+/* Quiz question va answer styling */
+.quiz-container .question {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+}
+
+.quiz-container .question h3 {
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.quiz-container .answers {
+    display: flex;
+    flex-direction: column; /* yonma-yon emas, vertical */
+    gap: 12px; /* har bir answer orasiga bo'sh joy */
+}
+
+.quiz-container .answer {
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: 1px solid #007bff;
+    cursor: pointer;
+    transition: 0.2s;
+    background-color: #f7f9fc;
+}
+
+.quiz-container .answer:hover {
+    background-color: #e2f0ff;
+}
+
+.quiz-container .answer input[type="radio"] {
+    margin-right: 10px; /* radio va text orasida bo'sh joy */
+}

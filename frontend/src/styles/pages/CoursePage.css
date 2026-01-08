@@ -1,0 +1,147 @@
+.course-hero {
+    background: linear-gradient(135deg, var(--primary-50), var(--accent-50));
+    border-radius: var(--radius-lg);
+    padding: var(--space-4xl) var(--space-3xl);
+    margin-bottom: var(--space-3xl);
+    border: 2px solid var(--border);
+}
+
+.course-hero-content h1 {
+    margin-bottom: var(--space-base);
+    font-size: var(--font-size-4xl);
+}
+
+.course-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+}
+
+.course-actions {
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.course-layout {
+    margin-top: var(--space-3xl);
+}
+
+.course-main {
+    flex: 1;
+}
+
+.course-section {
+    margin-bottom: var(--space-4xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--border);
+}
+
+.course-section:last-child {
+    border-bottom: none;
+}
+
+.course-section h2 {
+    margin-bottom: var(--space-lg);
+}
+
+.course-description {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    font-size: var(--font-size-base);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.course-sidebar {
+    width: 320px;
+}
+
+@media (max-width: 768px) {
+    .course-sidebar {
+        width: 100%;
+    }
+
+    .course-hero {
+        padding: var(--space-2xl) var(--space-lg);
+    }
+
+    .course-hero-content h1 {
+        font-size: var(--font-size-3xl);
+    }
+}
+
+.sidebar-card {
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+    border: 1px solid var(--border);
+    position: sticky;
+    top: var(--space-xl);
+}
+
+.sidebar-card h4 {
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 2px solid var(--border);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+}
+
+.detail-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.detail-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-base);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.detail-badge.enrolled {
+    background-color: var(--success-100);
+    color: var(--success-700);
+}
+
+.detail-badge.available {
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+}
+
+@media (max-width: 768px) {
+    .sidebar-card {
+        position: relative;
+        top: 0;
+    }
+}
+
+.price-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    background-color: #e3f2fd;
+    /* Och ko'k fon */
+    color: #1976d2;
+    /* To'q ko'k matn */
+    white-space: nowrap;
+    /* Narx ikki qatorga bo'linib ketmasligi uchun */
+}

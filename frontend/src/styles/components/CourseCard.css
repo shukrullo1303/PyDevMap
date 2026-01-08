@@ -1,0 +1,12 @@
+.price-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    background-color: #e3f2fd;
+    /* Och ko'k fon */
+    color: #1976d2;
+    /* To'q ko'k matn */
+    white-space: nowrap;
+    /* Narx ikki qatorga bo'linib ketmasligi uchun */
+}
