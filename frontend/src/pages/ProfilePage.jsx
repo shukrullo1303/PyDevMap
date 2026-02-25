@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getProfile } from '../services/auth';
 import { getMyEnrollments } from '../services/enrollments';
 import '../styles/pages/ProfilePage.css';
-import DownloadCertificateButton from '../components/DownloadCertificateButton'
+import DownloadCertificateButton from '../components/DownloadCertificateButton';
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
@@ -146,7 +146,7 @@ const ProfilePage = () => {
                 </aside>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default ProfilePage;

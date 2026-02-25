@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getLesson, getLessonsByCourse, markProgress, getLessonProgress } from '../services/lessons';
 import LessonListCard from '../components/LessonListCard';
 import { useAuth } from '../context/AuthContext';
@@ -11,15 +11,15 @@ const LessonPage = () => {
     const { user } = useAuth();
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [lesson_progress, setLessonProgress] = useState(null)
+    const [lesson_progress, setLessonProgress] = useState(null);
 
     useEffect(() => {
         const loadLessons = async () => {
             try {
                 const res = await getLesson(id); // backend API: /courses/:id/lessons/
                 setLessons(res.data);
-                const res_lesson_progress = await getLessonProgress(id)
-                setLessonProgress(res_lesson_progress.data)
+                const res_lesson_progress = await getLessonProgress(id);
+                setLessonProgress(res_lesson_progress.data);
             } catch (err) {
                 console.error(err);
             } finally {

@@ -1,4 +1,3 @@
-// pages/CoursePage.js
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCourse } from '../services/courses';
@@ -29,7 +28,7 @@ const CoursePage = () => {
             try {
                 const res2 = await getLessonsByCourse(id);
                 setLessons(Array.isArray(res2.data) ? res2.data : res2.data.results || []);
-                console.log(res2.data)
+                console.log(res2.data);
             } catch (e) {
                 setLessons([]);
             }

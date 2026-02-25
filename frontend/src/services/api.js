@@ -1,8 +1,11 @@
 // services/api.js
 import axios from 'axios';
 
+// Vite ortamida process.env o‘rniga import.meta.env ishlatiladi
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api/';
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE || 'http://localhost:8000/api/',
+  baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -59,7 +62,7 @@ api.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          (process.env.REACT_APP_API_BASE || 'http://localhost:8000/api/') + 'auth/token/refresh/',
+          API_BASE + 'auth/token/refresh/',
           { refresh }
         );
         const newAccess = res.data.access;
