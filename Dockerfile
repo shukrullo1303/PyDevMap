@@ -3,11 +3,13 @@ FROM python:3.11-slim
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-# System packages needed for building wheels and MySQL client
+# System packages needed for building wheels, MySQL client, and cairo (for pycairo)
 RUN apt-get update && apt-get install -y \
     build-essential \
     default-libmysqlclient-dev \
     pkg-config \
+    libcairo2-dev \
+    libffi-dev \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
