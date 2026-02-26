@@ -23,7 +23,7 @@ const Navigation = () => {
     return (
         <nav className="navbar">
             <div className="site-container navbar-content">
-                <Link to="/" className="nav-brand">OsonMarketing</Link>
+                <Link to="/" className="nav-brand">PyDevMap</Link>
 
                 {/* <form onSubmit={doSearch} className="search-form">
                     <input
