@@ -26,7 +26,11 @@ load_dotenv()
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fa8g=+4@(io9ydb*1$mq3e82hi54q#&e285%#fyul$jrsu(^2j'
+# In production (Railway) set SECRET_KEY in environment; locally this fallback is used.
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-fa8g=+4@(io9ydb*1$mq3e82hi54q#&e285%#fyul$jrsu(^2j',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -133,3 +137,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS Configuration (development)
 CORS_ALLOW_ALL_ORIGINS = True
+
