@@ -7,3 +7,4 @@ from src.api.serializers.quiz.quiz import QuizSerializer, QuizSubmitSerializer
 from src.api.serializers.quiz.question import QuestionSerializer
 from src.api.serializers.quiz.answer import AnswerSerializer
 from src.api.serializers.quiz.quiz_result import QuizResultSerializer
+from src.api.serializers.compiler import TaskSerializer, TaskDetailSerializer, SubmissionSerializer

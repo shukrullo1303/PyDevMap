@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getCourse } from '../services/courses';
-import { getLessonsByCourse, getLessonProgress } from '../services/lessons';
+import { getLessonsByCourse } from '../services/lessons';
 import LessonListCard from '../components/LessonListCard';
 import { enrollCourse, checkEnrolled } from '../services/enrollments';
 import { useAuth } from '../context/AuthContext';
-import '../styles/pages/CoursePage.css';
 
+const COURSE_ICONS = ['🐍', '⚙️', '📊', '🏗️', '🌐', '🤖', '🔧', '📦', '🚀', '🔐'];
+const ICON_BG_COLORS = [
+    'linear-gradient(135deg, #22c55e, #16a34a)',
+    'linear-gradient(135deg, #3b82f6, #0891b2)',
+    'linear-gradient(135deg, #f97316, #dc2626)',
+    'linear-gradient(135deg, #a855f7, #ec4899)',
+    'linear-gradient(135deg, #14b8a6, #22c55e)',
+];
 
 const CoursePage = () => {
     const { id } = useParams();
     const { user } = useAuth();
     const [course, setCourse] = useState(null);
     const [lessons, setLessons] = useState([]);
-    const [enrolled, setEnrolled] = useState();
+    const [enrolled, setEnrolled] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [enrolling, setEnrolling] = useState(false);
+
+    const iconIdx = Number(id) % COURSE_ICONS.length || 0;
+    const icon = COURSE_ICONS[iconIdx];
+    const bgColor = ICON_BG_COLORS[iconIdx % ICON_BG_COLORS.length];
 
     useEffect(() => {
         const load = async () => {
@@ -28,17 +40,15 @@ const CoursePage = () => {
             try {
                 const res2 = await getLessonsByCourse(id);
                 setLessons(Array.isArray(res2.data) ? res2.data : res2.data.results || []);
-                console.log(res2.data);
-            } catch (e) {
+            } catch {
                 setLessons([]);
             }
 
-            // ENROLLED STATUSNI TEKSHIRISH
             if (user) {
                 try {
                     const r = await checkEnrolled(id);
                     setEnrolled(r.data.enrolled);
-                } catch (e) {
+                } catch {
                     setEnrolled(false);
                 }
             }
@@ -48,115 +58,225 @@ const CoursePage = () => {
         load();
     }, [id, user]);
 
-
     const handleEnroll = async () => {
+        setEnrolling(true);
         try {
             const res = await enrollCourse(course.id);
-            alert(res.data.detail);
-            if (res.data.detail === "Successfully enrolled") {
+            if (res.data.detail === 'Successfully enrolled') {
                 setEnrolled(true);
             }
         } catch (err) {
-            console.error("Enroll error:", err.response?.data);
-            alert(err.response?.data?.detail || "Enroll failed");
+            console.error('Enroll error:', err.response?.data);
+        } finally {
+            setEnrolling(false);
         }
     };
 
-    if (loading) return <div className="site-container"><div className="loading-state">Loading course...</div></div>;
-    if (!course) return <div className="site-container"><div className="empty-state">Kurs topilmadi.</div></div>;
+    if (loading) return (
+        <div className="site-container loading-state">
+            <div className="loading-spinner"></div>
+            <p>Yuklanmoqda...</p>
+        </div>
+    );
+
+    if (!course) return (
+        <div className="site-container empty-state">
+            <p>Kurs topilmadi.</p>
+        </div>
+    );
+
+    const isFree = course.is_free || Number(course.price) === 0;
 
     return (
         <div className="site-container">
+            {/* Breadcrumb */}
             <div className="breadcrumb">
                 <Link to="/">Bosh sahifa</Link>
                 <span>/</span>
-                <span>{course.title}</span>
+                <Link to="/courses">Kurslar</Link>
+                <span>/</span>
+                <span style={{ color: 'var(--text-primary)' }}>{course.title}</span>
             </div>
 
-            <div className="course-hero">
-                <div className="course-hero-content">
-                    <h1>{course.title}</h1>
-                    <p className="course-subtitle">{course.subtitle || course.description?.slice(0, 120)}</p>
-                    <div className="course-actions">
-                        <div className="price-badge">
-                            {course.is_free
-                                ? 'Bepul'
-                                : `${Number(course.price).toLocaleString('fr-FR').replace(',', ' ')} so'm`}
+            {/* Course Hero */}
+            <div style={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '32px',
+                marginBottom: 32,
+            }}>
+                <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                    {/* Icon */}
+                    <div style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 'var(--radius-md)',
+                        background: bgColor,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 32,
+                        flexShrink: 0,
+                    }}>
+                        {icon}
+                    </div>
+
+                    <div style={{ flex: 1, minWidth: 200 }}>
+                        <h1 style={{ fontSize: 'var(--font-size-3xl)', marginBottom: 8 }}>
+                            {course.title}
+                        </h1>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>
+                            {course.subtitle || course.description?.slice(0, 150)}
+                        </p>
+
+                        <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                            {isFree ? (
+                                <span className="badge badge-free" style={{ fontSize: 14, padding: '4px 14px' }}>Bepul</span>
+                            ) : (
+                                <span style={{ fontWeight: 700, fontSize: 'var(--font-size-xl)', color: 'var(--text-primary)' }}>
+                                    {Number(course.price).toLocaleString('fr-FR').replace(',', ' ')} so'm
+                                </span>
+                            )}
+
+                            {user ? (
+                                <button
+                                    onClick={handleEnroll}
+                                    className={`btn ${enrolled ? 'btn-secondary' : 'btn-primary'}`}
+                                    disabled={enrolled || enrolling}
+                                    style={{ padding: '10px 24px' }}
+                                >
+                                    {enrolled ? (
+                                        <>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                            Ro'yxatda
+                                        </>
+                                    ) : enrolling ? 'Yuklanmoqda...' : (
+                                        <>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                            </svg>
+                                            Ro'yxatdan o'tish
+                                        </>
+                                    )}
+                                </button>
+                            ) : (
+                                <Link to="/login" className="btn btn-primary" style={{ padding: '10px 24px' }}>
+                                    Kirish kerak
+                                </Link>
+                            )}
                         </div>
-                        <button
-                            onClick={handleEnroll}
-                            className={`btn ${enrolled ? 'btn-secondary' : 'btn-primary'}`}
-                            disabled={enrolled}
-                        >
-                            {enrolled ? '✓ Enrolled' : 'Enroll now'}
-                        </button>
                     </div>
                 </div>
             </div>
 
-            <div className="course-layout sidebar">
+            {/* Layout */}
+            <div className="sidebar course-layout">
                 <div className="course-main">
-                    <section className="course-section">
-                        <h2>Kurs haqida</h2>
-                        <p className="course-description">
+                    {/* About */}
+                    <section style={{ marginBottom: 40 }}>
+                        <h2 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 16 }}>Kurs haqida</h2>
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
                             {course.description}
                         </p>
                     </section>
 
-                    <section className="course-section">
-                        <h2>Darslar ({lessons.length})</h2>
+                    {/* Lessons */}
+                    <section>
+                        <h2 style={{ fontSize: 'var(--font-size-2xl)', marginBottom: 16 }}>
+                            Darslar
+                            <span style={{
+                                marginLeft: 10,
+                                fontSize: 'var(--font-size-base)',
+                                fontWeight: 400,
+                                color: 'var(--text-tertiary)',
+                            }}>
+                                ({lessons.length} ta)
+                            </span>
+                        </h2>
+
                         {lessons.length === 0 ? (
-                            <div className="empty-state">Darslar yo'q</div>
+                            <div className="empty-state" style={{ padding: '24px 0' }}>
+                                <p>Darslar hali qo'shilmagan</p>
+                            </div>
                         ) : (
                             <div className="lesson-grid">
                                 {lessons.map((lesson, idx) => {
-                                    // Foydalanuvchining progressini olish
-                                    const userProgress = lesson.progress_records?.find(pr => pr.user === user?.id);
-
-                                    // Oldingi lesson progressini topish
                                     const prevLesson = lessons.find(l => l.id === lesson.prev_lesson_id);
                                     const prevProgress = prevLesson?.progress_records?.find(pr => pr.user === user?.id);
-
-                                    // Lesson ochiq bo‘lish sharti
                                     const isOpen = enrolled && (
-                                        lesson.prev_lesson_id === null || // birinchi lesson
-                                        prevProgress?.completed           // oldingi lesson completed bo‘lsa
+                                        lesson.prev_lesson_id === null ||
+                                        prevProgress?.completed
                                     );
                                     return (
                                         <LessonListCard
                                             key={lesson.id}
                                             lesson={lesson}
                                             index={idx + 1}
-                                            isOpen={isOpen}  // button LessonListCard ichida shu shartga qarab
+                                            isOpen={isOpen}
                                         />
                                     );
                                 })}
-
                             </div>
                         )}
                     </section>
-
                 </div>
 
-                <aside className="course-sidebar">
-                    <div className="sidebar-card">
-                        <h4>Kurs ma'lumotlari</h4>
-                        <div className="detail-item">
-                            <span className="detail-label">O'qituvchi</span>
-                            <span className="detail-value">{course.instructor_name || 'TBA'}</span>
-                        </div>
-                        <div className="detail-item">
-                            <span className="detail-label">Daraja</span>
-                            <span className="detail-value">{course.level || 'noaniq'}</span>
-                        </div>
-                        <div className="detail-item">
-                            <span className="detail-label">Darslar</span>
-                            <span className="detail-value">{lessons.length}</span>
-                        </div>
-                        <div className="detail-item">
-                            <span className="detail-label">Status</span>
-                            <span className={`detail-badge ${enrolled ? 'enrolled' : 'available'}`}>
-                                {enrolled ? 'Enrolled' : 'Available'}
+                {/* Sidebar */}
+                <aside>
+                    <div style={{
+                        background: 'var(--surface)',
+                        border: '1px solid var(--border)',
+                        borderRadius: 'var(--radius-md)',
+                        padding: 'var(--space-xl)',
+                        position: 'sticky',
+                        top: 80,
+                    }}>
+                        <h4 style={{ marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
+                            Kurs ma'lumotlari
+                        </h4>
+
+                        {[
+                            { label: "O'qituvchi", value: course.instructor_name || 'TBA' },
+                            { label: 'Daraja', value: course.level || 'Noaniq' },
+                            { label: 'Darslar', value: `${lessons.length} ta` },
+                            { label: 'Kategoriya', value: course.category_name || '—' },
+                        ].map(({ label, value }) => (
+                            <div key={label} style={{ marginBottom: 16 }}>
+                                <div style={{
+                                    fontSize: 'var(--font-size-xs)',
+                                    fontWeight: 600,
+                                    color: 'var(--text-tertiary)',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    marginBottom: 4,
+                                }}>
+                                    {label}
+                                </div>
+                                <div style={{ fontSize: 'var(--font-size-base)', color: 'var(--text-primary)', fontWeight: 500 }}>
+                                    {value}
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Status */}
+                        <div style={{ marginTop: 8 }}>
+                            <div style={{
+                                fontSize: 'var(--font-size-xs)',
+                                fontWeight: 600,
+                                color: 'var(--text-tertiary)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px',
+                                marginBottom: 4,
+                            }}>
+                                Status
+                            </div>
+                            <span className={`badge ${enrolled ? 'badge-success' : 'badge-outline'}`}
+                                style={{ fontSize: 13, padding: '4px 12px' }}>
+                                {enrolled ? '✓ Ro\'yxatda' : 'Hali yozilmagan'}
                             </span>
                         </div>
                     </div>

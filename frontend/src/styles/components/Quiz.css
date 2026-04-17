@@ -1,42 +1,67 @@
 .quiz-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
+/* ── Savol bloki ── */
 .question {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background-color: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: background 0.2s, border-color 0.2s;
 }
 
 .question h3 {
-    margin-bottom: 12px;
-    font-size: 1.2rem;
-    color: #333;
+    margin-bottom: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.5;
 }
 
+/* ── Javoblar ro'yxati ── */
 .answers {
     display: flex;
-    flex-direction: column; /* javoblar vertical */
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
 }
 
+/* ── Bitta javob ── */
 .answer {
-    padding: 10px 15px;
-    border-radius: 6px;
-    border: 1px solid #007bff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
     cursor: pointer;
-    background-color: #f7f9fc;
-    transition: 0.2s;
+    background-color: var(--surface-2);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    user-select: none;
 }
 
 .answer:hover {
-    background-color: #e2f0ff;
+    background-color: var(--primary-100);
+    border-color: var(--primary-600);
+    color: var(--text-primary);
+}
+
+/* Tanlangan javob */
+.answer:has(input[type="radio"]:checked) {
+    background-color: var(--primary-100);
+    border-color: var(--primary-600);
+    color: var(--text-primary);
 }
 
 .answer input[type="radio"] {
-    margin-right: 10px;
+    accent-color: var(--primary-600);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
 }

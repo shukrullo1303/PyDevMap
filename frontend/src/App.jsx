@@ -1,25 +1,31 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/HomePage';
+import RoadmapPage from './pages/RoadmapPage';
+import CoursesPage from './pages/CoursesPage';
 import CoursePage from './pages/CoursePage';
-import LessonPage from './pages/LessonPage';
+import LessonDetailPage from './pages/LessonDetailPage';
 import QuizPage from './pages/QuizPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import TasksListPage from './pages/TasksListPage';
+import TaskPage from './pages/TaskPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 import Navigation from './components/Navbar';
 import { AuthProvider } from './context/AuthContext';
-import LessonDetailPage from './pages/LessonDetailPage';
+import { ThemeProvider } from './context/ThemeContext';
 
 
 function App() {
   return (
+    <ThemeProvider>
     <Router>
       <AuthProvider>
         <Navigation />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<RoadmapPage />} />
+          <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:id" element={<CoursePage />} />
           <Route path="/lessons/:id" element={<LessonDetailPage />} />
           <Route path="/quiz/:id" element={<QuizPage />} />
@@ -27,11 +33,14 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/tasks" element={<TasksListPage />} />
+          <Route path="/tasks/:id" element={<TaskPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>
       </AuthProvider>
     </Router>
+    </ThemeProvider>
   );
 }
-
 
 export default App;

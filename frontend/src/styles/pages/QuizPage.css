@@ -1,38 +1,79 @@
-/* Quiz question va answer styling */
+/* ── Quiz page ── */
+.quiz-page h1 {
+    margin-bottom: 24px;
+}
+
+/* QuizPage ichidagi question/answer (quiz-container class bilan kelsa) */
 .quiz-container .question {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #fff;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+    padding: 20px;
+    background-color: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: background 0.2s, border-color 0.2s;
 }
 
 .quiz-container .question h3 {
     margin-bottom: 12px;
-    font-size: 1.2rem;
-    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 .quiz-container .answers {
     display: flex;
-    flex-direction: column; /* yonma-yon emas, vertical */
-    gap: 12px; /* har bir answer orasiga bo'sh joy */
+    flex-direction: column;
+    gap: 8px;
 }
 
 .quiz-container .answer {
-    padding: 12px 15px;
-    border-radius: 6px;
-    border: 1px solid #007bff;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
     cursor: pointer;
-    transition: 0.2s;
-    background-color: #f7f9fc;
+    background-color: var(--surface-2);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: background 0.15s, border-color 0.15s;
 }
 
 .quiz-container .answer:hover {
-    background-color: #e2f0ff;
+    background-color: var(--primary-100);
+    border-color: var(--primary-600);
 }
 
 .quiz-container .answer input[type="radio"] {
-    margin-right: 10px; /* radio va text orasida bo'sh joy */
+    margin-right: 10px;
+    accent-color: var(--primary-600);
+}
+
+/* ── Natija bloki ── */
+.quiz-result {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.quiz-result h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.quiz-result p {
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.quiz-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
 }

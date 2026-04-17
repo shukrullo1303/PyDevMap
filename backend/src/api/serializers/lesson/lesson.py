@@ -9,11 +9,21 @@ class LessonSerializer(BaseSerializer):
     next_lesson_id = serializers.SerializerMethodField()
     prev_lesson_id = serializers.SerializerMethodField()
 
+    required_task_id = serializers.SerializerMethodField()
+    required_task_title = serializers.SerializerMethodField()
+
     class Meta:
         model = LessonModel
-        fields = ['id', 'title', 'order', 'video_url', 
-                    'course_id', 'created_at', 'updated_at', 
-                  'quizzes', 'progress_records' ,'next_lesson_id', "prev_lesson_id"]
+        fields = ['id', 'title', 'order', 'video_url', 'content',
+                  'course_id', 'created_at', 'updated_at',
+                  'quizzes', 'progress_records', 'next_lesson_id', 'prev_lesson_id',
+                  'required_task_id', 'required_task_title']
+
+    def get_required_task_id(self, lesson):
+        return lesson.required_task_id
+
+    def get_required_task_title(self, lesson):
+        return lesson.required_task.title if lesson.required_task else None
 
     # def get_is_locked(self, lesson):
     #     request = self.context['request']
