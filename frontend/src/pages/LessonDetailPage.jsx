@@ -4,6 +4,7 @@ import { getLesson, markLessonCompleted } from "../services/lessons";
 import { getQuizByLesson, getUserQuizResult } from "../services/quiz";
 import api from "../services/api";
 import "../styles/pages/LessonDetailPage.css";
+import AiChat from "../components/AiChat";
 
 export default function LessonDetailPage() {
   const { id } = useParams();
@@ -275,6 +276,9 @@ export default function LessonDetailPage() {
           </div>
         )}
       </div>
+
+      {/* AI Tutor chat */}
+      <AiChat lessonId={lesson.id} />
 
       {/* ── KURS YAKUNLASH MODAL ── */}
       {showComplete && (

@@ -14,3 +14,4 @@ from src.core.models.quiz.quiz_result import QuizResultModel
 from src.core.models.quiz.question import QuestionModel
 from src.core.models.compiler.submission import SubmissionModel
 from src.core.models.compiler.task import TaskModel
+from src.core.models.placement import PlacementQuestion, PlacementSession, PlacementResponse, DiscountCoupon

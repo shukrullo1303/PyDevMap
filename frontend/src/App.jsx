@@ -12,6 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import TasksListPage from './pages/TasksListPage';
 import TaskPage from './pages/TaskPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import PlacementTestPage from './pages/PlacementTestPage';
 import Navigation from './components/Navbar';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -36,6 +37,7 @@ function App() {
           <Route path="/tasks" element={<TasksListPage />} />
           <Route path="/tasks/:id" element={<TaskPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/placement-test" element={<PlacementTestPage />} />
         </Routes>
       </AuthProvider>
     </Router>

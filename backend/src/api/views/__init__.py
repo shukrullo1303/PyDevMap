@@ -8,3 +8,5 @@ from src.api.views.quiz.question import QuestionViewSet
 from src.api.views.quiz.answer import AnswerViewSet
 from src.api.views.quiz.quiz_result import QuizResultViewSet
 from src.api.views.payment import PaymeView, CreatePaymeOrderView, ClickView, CreateClickOrderView
+from src.api.views.placement import StartTestView, AnswerView, TestResultView, ValidateCouponView
+from src.api.views.ai_tutor import AiChatView, CodeReviewView
