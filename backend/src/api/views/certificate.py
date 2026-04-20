@@ -94,9 +94,9 @@ def _draw_logo(c, W, H):
 
     c.setFont("Helvetica", 7.5)
     c.setFillColor(GRAY)
-    c.setCharSpace(2)
+    c._charSpace = 2
     c.drawString(lx + 29, ly - 19, "PYTHON DASTURLASH AKADEMIYASI")
-    c.setCharSpace(0)
+    c._charSpace = 0
 
     # Logo ostidagi chiziq
     c.setStrokeColor(GOLD)
@@ -110,9 +110,9 @@ def _draw_title(c, W, H):
 
     c.setFont("Helvetica", 8.5)
     c.setFillColor(GOLD)
-    c.setCharSpace(5)
+    c._charSpace = 5
     c.drawCentredString(W / 2, ty + 28, "✦   SERTIFIKAT   ✦")
-    c.setCharSpace(0)
+    c._charSpace = 0
 
     c.setFont("Helvetica-Bold", 30)
     c.setFillColor(WHITE)
@@ -216,9 +216,9 @@ def _draw_bottom(c, W, H, user, course, cert_id):
     # ── Chap: Sana ──────────────────────────────
     c.setFont("Helvetica-Bold", 8)
     c.setFillColor(GRAY)
-    c.setCharSpace(2)
+    c._charSpace = 2
     c.drawString(82, bottom_y + 46, "SANA")
-    c.setCharSpace(0)
+    c._charSpace = 0
 
     date_str = datetime.now().strftime("%d %B %Y")
     c.setFont("Helvetica-Bold", 14)
@@ -243,9 +243,9 @@ def _draw_bottom(c, W, H, user, course, cert_id):
 
     c.setFont("Helvetica-Bold", 8)
     c.setFillColor(GRAY)
-    c.setCharSpace(1.5)
+    c._charSpace = 1.5
     c.drawCentredString(sig_x, bottom_y + 10, "RAHBARIYAT IMZOSI")
-    c.setCharSpace(0)
+    c._charSpace = 0
 
     c.setFont("Helvetica", 7.5)
     c.setFillColor(GRAY_DARK)
@@ -273,9 +273,9 @@ def _draw_bottom(c, W, H, user, course, cert_id):
 
     c.setFont("Helvetica-Bold", 7)
     c.setFillColor(GRAY)
-    c.setCharSpace(1)
+    c._charSpace = 1
     c.drawCentredString(qr_x + qr_size / 2, qr_y - 10, "TEKSHIRISH")
-    c.setCharSpace(0)
+    c._charSpace = 0
 
     c.setFont("Helvetica-Bold", 8)
     c.setFillColor(GOLD)
@@ -294,9 +294,9 @@ def _draw_bottom(c, W, H, user, course, cert_id):
     c.roundRect(W - 170, H - 75, 98, 22, 5, fill=1, stroke=0)
     c.setFont("Helvetica-Bold", 8.5)
     c.setFillColor(WHITE)
-    c.setCharSpace(1)
+    c._charSpace = 1
     c.drawCentredString(W - 121, H - 67, level.upper())
-    c.setCharSpace(0)
+    c._charSpace = 0
 
 
 class CertificateView(APIView):
