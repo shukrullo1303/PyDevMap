@@ -97,12 +97,14 @@ const ProfilePage = () => {
                         ) : (
                             <div className="enrollments-list">
                                 {enrollments.map((e) => {
-                                    const courseProgress = progress.find(p => p.course_id === e.course) || { progress: 0, course_title: e.course_title };
+                                    const courseProgress = progress.find(p => p.course_id === e.course) || { progress: 0 };
+                                    // course_title: serializer'dan kelsa e.course_title, aks holda progress'dan olamiz
+                                    const displayTitle = e.course_title || courseProgress.course_title || `Kurs #${e.course}`;
                                     return (
                                         <div key={e.id} className="enrollment-item">
                                             {/* Faqat 100% bo'lganda sertifikat tugmasi */}
                                             <div className="enrollment-header">
-                                                <h4>{e.course_title || e.course}</h4>
+                                                <h4>{displayTitle}</h4>
                                                 {courseProgress.progress === 100 ?
                                                     <DownloadCertificateButton courseId={e.course} /> :
                                                     <span className="enrollment-status">Jarayonda</span>

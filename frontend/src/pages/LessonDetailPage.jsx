@@ -9,11 +9,13 @@ export default function LessonDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [lesson, setLesson]     = useState(null);
-  const [quiz, setQuiz]         = useState(null);
-  const [result, setResult]     = useState(null);
+  const [lesson, setLesson]         = useState(null);
+  const [quiz, setQuiz]             = useState(null);
+  const [result, setResult]         = useState(null);
   const [taskSolved, setTaskSolved] = useState(false);
-  const [loading, setLoading]   = useState(true);
+  const [loading, setLoading]       = useState(true);
+  const [completing, setCompleting] = useState(false);
+  const [showComplete, setShowComplete] = useState(false); // yakunlash modal
 
   useEffect(() => { loadLesson(); }, [id]);
 
@@ -58,6 +60,18 @@ export default function LessonDetailPage() {
       navigate(`/lessons/${lesson.next_lesson_id}`);
     } catch (err) {
       console.error("Mark complete error:", err);
+    }
+  };
+
+  const completeCourse = async () => {
+    setCompleting(true);
+    try {
+      await markLessonCompleted(lesson.id);
+      setShowComplete(true);
+    } catch (err) {
+      console.error("Complete error:", err);
+    } finally {
+      setCompleting(false);
     }
   };
 
@@ -210,7 +224,7 @@ export default function LessonDetailPage() {
           </button>
         ) : <div />}
 
-        {lesson.next_lesson_id && (
+        {lesson.next_lesson_id ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
             <button
               className="btn btn-success"
@@ -234,8 +248,96 @@ export default function LessonDetailPage() {
               </span>
             )}
           </div>
+        ) : (
+          /* ── OXIRGI DARS: Kursni yakunlash ── */
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+            <button
+              className="btn btn-primary"
+              disabled={!canGoNext() || completing}
+              onClick={completeCourse}
+              style={{
+                background: canGoNext() ? 'linear-gradient(135deg, #22c55e, #16a34a)' : undefined,
+                border: 'none',
+                fontWeight: 700,
+                fontSize: 14,
+                padding: '10px 24px',
+              }}
+            >
+              {completing ? 'Saqlanmoqda...' : '🎓 Kursni yakunlash'}
+            </button>
+            {!canGoNext() && (
+              <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
+                {lesson.required_task_id && !taskSolved
+                  ? '🔒 Avval masalani yeching'
+                  : '🔒 Test natijasi 80%+ bo\'lsin'}
+              </span>
+            )}
+          </div>
         )}
       </div>
+
+      {/* ── KURS YAKUNLASH MODAL ── */}
+      {showComplete && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 24,
+        }}>
+          <div style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 20,
+            padding: '40px 36px',
+            maxWidth: 440,
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 24px 80px rgba(0,0,0,0.4)',
+          }}>
+            <div style={{ fontSize: 64, marginBottom: 16 }}>🎓</div>
+            <h2 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
+              Tabriklaymiz!
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 8 }}>
+              Siz kursni muvaffaqiyatli yakunladingiz!
+            </p>
+            <div style={{
+              background: 'rgba(34,197,94,0.1)',
+              border: '1px solid rgba(34,197,94,0.3)',
+              borderRadius: 12,
+              padding: '12px 20px',
+              marginBottom: 28,
+              display: 'inline-block',
+            }}>
+              <span style={{ fontWeight: 700, color: '#22c55e', fontSize: 14 }}>
+                ✓ Kurs 100% yakunlandi
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button
+                className="btn btn-primary"
+                style={{ fontWeight: 700, fontSize: 14, padding: '12px 0' }}
+                onClick={() => {
+                  setShowComplete(false);
+                  navigate('/profile');
+                }}
+              >
+                Profilga o'tish va sertifikat olish
+              </button>
+              <button
+                className="btn btn-outline-secondary"
+                style={{ fontSize: 13 }}
+                onClick={() => {
+                  setShowComplete(false);
+                  navigate('/courses');
+                }}
+              >
+                Boshqa kurslarga qaytish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
