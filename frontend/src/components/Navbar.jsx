@@ -75,6 +75,15 @@ const Navigation = () => {
                             </svg>
                             Reyting
                         </Link>
+                        {user && (
+                            <Link to="/placement-test" className={`nav-btn ${isActive('/placement-test') ? 'active' : ''}`} style={{
+                                background: isActive('/placement-test') ? undefined : 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))',
+                                borderColor: 'rgba(168,85,247,0.4)',
+                            }}>
+                                <span style={{ fontSize: 13 }}>🧠</span>
+                                Bilimni baholash
+                            </Link>
+                        )}
                     </div>
                 </div>
 
