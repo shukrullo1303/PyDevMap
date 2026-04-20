@@ -5,6 +5,7 @@ import { getLessonsByCourse } from '../services/lessons';
 import LessonListCard from '../components/LessonListCard';
 import { enrollCourse, checkEnrolled } from '../services/enrollments';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 
 const COURSE_ICONS = ['🐍', '⚙️', '📊', '🏗️', '🌐', '🤖', '🔧', '📦', '🚀', '🔐'];
 const ICON_BG_COLORS = [
@@ -23,6 +24,7 @@ const CoursePage = () => {
     const [enrolled, setEnrolled] = useState(false);
     const [loading, setLoading] = useState(true);
     const [enrolling, setEnrolling] = useState(false);
+    const [payModal, setPayModal] = useState(null); // { checkout_url, amount, provider }
 
     const iconIdx = Number(id) % COURSE_ICONS.length || 0;
     const icon = COURSE_ICONS[iconIdx];
@@ -61,9 +63,22 @@ const CoursePage = () => {
     const handleEnroll = async () => {
         setEnrolling(true);
         try {
-            const res = await enrollCourse(course.id);
-            if (res.data.detail === 'Successfully enrolled') {
-                setEnrolled(true);
+            const isFreeNow = course.is_free || Number(course.price) === 0;
+            if (isFreeNow) {
+                const res = await enrollCourse(course.id);
+                if (res.data.detail === 'Successfully enrolled') setEnrolled(true);
+            } else {
+                // To'lovli kurs — Payme order yarat
+                const res = await api.post('/payment/payme/order/', { course_id: course.id });
+                if (res.data.enrolled) {
+                    setEnrolled(true);
+                } else {
+                    setPayModal({
+                        checkout_url: res.data.checkout_url,
+                        amount: res.data.amount,
+                        provider: 'payme',
+                    });
+                }
             }
         } catch (err) {
             console.error('Enroll error:', err.response?.data);
@@ -88,6 +103,81 @@ const CoursePage = () => {
     const isFree = course.is_free || Number(course.price) === 0;
 
     return (
+      <>
+      {/* ── To'lov modal ── */}
+      {payModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 2000,
+          background: 'rgba(0,0,0,0.75)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 24,
+        }}>
+          <div style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 20,
+            padding: '36px 32px',
+            maxWidth: 420, width: '100%',
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>💳</div>
+            <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>To'lov</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 4 }}>{course.title}</p>
+            <div style={{
+              fontSize: 28, fontWeight: 800,
+              color: 'var(--primary-400)',
+              marginBottom: 24,
+            }}>
+              {Number(payModal.amount).toLocaleString('fr-FR')} so'm
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {/* Payme */}
+              <a
+                href={payModal.checkout_url}
+                target="_blank" rel="noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                  padding: '13px 0', borderRadius: 10, fontWeight: 700, fontSize: 15,
+                  background: '#00CAAB', color: '#fff', textDecoration: 'none',
+                }}
+                onClick={() => setPayModal(null)}
+              >
+                <span style={{ fontSize: 20 }}>💚</span> Payme orqali to'lash
+              </a>
+
+              {/* Click */}
+              <button
+                onClick={async () => {
+                  try {
+                    const r = await api.post('/payment/click/order/', { course_id: course.id });
+                    if (r.data.checkout_url) {
+                      window.open(r.data.checkout_url, '_blank');
+                      setPayModal(null);
+                    }
+                  } catch (e) { console.error(e); }
+                }}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                  padding: '13px 0', borderRadius: 10, fontWeight: 700, fontSize: 15,
+                  background: '#FE5722', color: '#fff', border: 'none', cursor: 'pointer',
+                }}
+              >
+                <span style={{ fontSize: 20 }}>🔴</span> Click orqali to'lash
+              </button>
+
+              <button
+                onClick={() => setPayModal(null)}
+                className="btn btn-outline-secondary"
+                style={{ marginTop: 4 }}
+              >
+                Bekor qilish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="site-container">
         <div className="site-container">
             {/* Breadcrumb */}
             <div className="breadcrumb">
@@ -283,6 +373,8 @@ const CoursePage = () => {
                 </aside>
             </div>
         </div>
+      </div>
+    </>
     );
 };
 

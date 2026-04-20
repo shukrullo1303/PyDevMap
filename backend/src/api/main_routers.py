@@ -15,5 +15,6 @@ urlpatterns = [
     path('lesson-progress/', include('src.api.urls.lesson_progress')),
     path('course-progress/', course_progress, name='course-progress'),
     path('certificate/<int:course_id>/', CertificateView.as_view(), name='certificate-detail'),
-    path('compiler/', include('src.api.urls.compiler'))
+    path('compiler/', include('src.api.urls.compiler')),
+    path('payment/', include('src.api.urls.payment')),
 ]
