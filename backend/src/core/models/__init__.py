@@ -15,3 +15,5 @@ from src.core.models.quiz.question import QuestionModel
 from src.core.models.compiler.submission import SubmissionModel
 from src.core.models.compiler.task import TaskModel
 from src.core.models.placement import PlacementQuestion, PlacementSession, PlacementResponse, DiscountCoupon
+from src.core.models.user_profile import UserProfile
+from src.core.models.support import SupportMessage

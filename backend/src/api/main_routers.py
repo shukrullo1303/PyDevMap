@@ -1,7 +1,6 @@
 from django.urls import include, path
 from src.api.views.utils import course_progress
-from src.api.views.certificate import  CertificateView
-
+from src.api.views.certificate import CertificateView
 
 
 urlpatterns = [
@@ -11,6 +10,7 @@ urlpatterns = [
     path('quiz_result/', include('src.api.urls.quiz_result')),
     path("", include("src.api.urls.swagger")),
     path("auth/", include("src.api.urls.auth")),
+    path("auth/", include("src.api.urls.profile")),
     path('enrollments/', include('src.api.urls.enrollment')),
     path('lesson-progress/', include('src.api.urls.lesson_progress')),
     path('course-progress/', course_progress, name='course-progress'),
@@ -19,4 +19,5 @@ urlpatterns = [
     path('payment/',   include('src.api.urls.payment')),
     path('placement/', include('src.api.urls.placement')),
     path('ai/',        include('src.api.urls.ai')),
+    path('support/',   include('src.api.urls.support')),
 ]

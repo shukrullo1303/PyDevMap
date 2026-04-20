@@ -124,14 +124,16 @@ class CreateClickOrderView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        course_id = request.data.get('course_id')
+        course_id   = request.data.get('course_id')
+        coupon_code = request.data.get('coupon_code', '').strip().upper()
+
         try:
             course = CourseModel.objects.get(id=course_id)
         except CourseModel.DoesNotExist:
             return Response({'error': 'Kurs topilmadi'}, status=404)
 
         if course.is_free or course.price == 0:
-            enrollment, _ = EnrollmentModel.objects.get_or_create(
+            EnrollmentModel.objects.get_or_create(
                 user=request.user, course=course, defaults={'is_paid': True}
             )
             return Response({'enrolled': True, 'free': True})
@@ -139,17 +141,41 @@ class CreateClickOrderView(APIView):
         if EnrollmentModel.objects.filter(user=request.user, course=course).exists():
             return Response({'enrolled': True})
 
-        order, _ = OrderModel.objects.get_or_create(
-            user=request.user,
-            course=course,
-            status=OrderModel.STATUS_PENDING,
-            defaults={
-                'amount':   course.price,
-                'provider': OrderModel.PROVIDER_CLICK,
-            }
-        )
+        # Kuponni tekshirish va chegirma hisoblash
+        final_amount = int(course.price)
+        coupon = None
+        if coupon_code:
+            from src.core.models.placement import DiscountCoupon
+            from django.utils import timezone as tz
+            try:
+                c = DiscountCoupon.objects.get(code=coupon_code, user=request.user)
+                if not c.is_used and tz.now() <= c.valid_until:
+                    final_amount = int(course.price * (1 - c.percentage / 100))
+                    coupon = c
+            except DiscountCoupon.DoesNotExist:
+                pass
 
-        # Click to'lov URL
+        # Eski pending orderni yangilab yoki yangi yaratish
+        existing = OrderModel.objects.filter(
+            user=request.user, course=course, status=OrderModel.STATUS_PENDING
+        ).first()
+        if existing:
+            existing.amount = final_amount
+            existing.provider = OrderModel.PROVIDER_CLICK
+            existing.save(update_fields=['amount', 'provider'])
+            order = existing
+        else:
+            order = OrderModel.objects.create(
+                user=request.user, course=course,
+                status=OrderModel.STATUS_PENDING,
+                amount=final_amount,
+                provider=OrderModel.PROVIDER_CLICK,
+            )
+
+        if coupon:
+            coupon.is_used = True
+            coupon.save(update_fields=['is_used'])
+
         checkout_url = (
             f"https://my.click.uz/services/pay"
             f"?service_id={CLICK_SERVICE_ID}"

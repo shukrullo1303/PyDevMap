@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
@@ -20,17 +20,80 @@ const LEVEL_INFO = {
 
 export default function PlacementTestPage() {
   const navigate = useNavigate();
-  const [phase, setPhase]       = useState('intro');   // intro | test | result
+  const [phase, setPhase]       = useState('intro');
   const [session, setSession]   = useState(null);
   const [question, setQuestion] = useState(null);
   const [selected, setSelected] = useState('');
   const [codeAnswer, setCodeAnswer] = useState('');
-  const [feedback, setFeedback]  = useState(null);   // {is_correct, explanation}
+  const [feedback, setFeedback]  = useState(null);
   const [progress, setProgress]  = useState(0);
   const [total, setTotal]        = useState(25);
   const [result, setResult]      = useState(null);
   const [loading, setLoading]    = useState(false);
   const [startTime, setStartTime] = useState(null);
+  const [cheatWarning, setCheatWarning] = useState(false);
+
+  // Ref holding latest state for stable event listeners
+  const stateRef = useRef({});
+  stateRef.current = { phase, question, session, loading, feedback, startTime };
+
+  // Cheat handler ref — always up-to-date, registered once
+  const cheatRef = useRef(null);
+  cheatRef.current = async () => {
+    const s = stateRef.current;
+    if (s.phase !== 'test' || s.loading || s.feedback || !s.question) return;
+
+    setLoading(true);
+    const timeSec = Math.round((Date.now() - s.startTime) / 1000);
+    try {
+      const res = await api.post('/placement/answer/', {
+        session_id:  s.session,
+        question_id: s.question.id,
+        answer:      '',           // intentionally empty = wrong
+        time_spent:  timeSec,
+      });
+
+      setCheatWarning(true);
+      setTimeout(() => setCheatWarning(false), 3000);
+
+      if (res.data.finished) {
+        setResult(res.data.result);
+        setPhase('result');
+        return;
+      }
+
+      setFeedback({
+        is_correct:  false,
+        explanation: "Boshqa tab yoki oynaga o'tganligi uchun savol avtomatik o'zgartirildi.",
+      });
+      setProgress(res.data.progress);
+
+      setTimeout(() => {
+        setFeedback(null);
+        setSelected('');
+        setCodeAnswer('');
+        setQuestion(res.data.next_question);
+        setStartTime(Date.now());
+      }, 1800);
+    } catch (_) {
+      // silently ignore network errors
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Register anti-cheat listeners once
+  useEffect(() => {
+    const onVisibility = () => { if (document.hidden) cheatRef.current?.(); };
+    const onBlur = () => cheatRef.current?.();
+
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('blur', onBlur);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('blur', onBlur);
+    };
+  }, []);
 
   const startTest = async () => {
     setLoading(true);
@@ -110,6 +173,7 @@ export default function PlacementTestPage() {
           ['📊', '10 ta mavzu bo\'yicha: asoslardan algoritmgacha'],
           ['🎯', 'Natijaga qarab kurslar tavsiya qilinadi'],
           ['🏷️', 'Iqtidorli o\'quvchilarga chegirma kuponi'],
+          ['🔒', 'Tab yoki oyna almashtirilsa savol o\'zgartiriladi'],
         ].map(([icon, text]) => (
           <div key={text} style={{ display: 'flex', gap: 12, alignItems: 'center', color: 'var(--text-secondary)' }}>
             <span style={{ fontSize: 20 }}>{icon}</span>
@@ -134,6 +198,20 @@ export default function PlacementTestPage() {
     const pct = Math.round((progress / total) * 100);
     return (
       <div className="site-container" style={{ maxWidth: 700, margin: '0 auto' }}>
+
+        {/* Cheat warning toast */}
+        {cheatWarning && (
+          <div style={{
+            position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)',
+            background: '#ef4444', color: '#fff',
+            padding: '12px 24px', borderRadius: 10, fontWeight: 700, fontSize: 14,
+            zIndex: 9999, boxShadow: '0 4px 20px rgba(239,68,68,0.4)',
+            animation: 'fadeIn 0.2s ease',
+          }}>
+            ⚠️ Tab almashtirildi — savol o'zgartirildi!
+          </div>
+        )}
+
         {/* Progress */}
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>

@@ -25,6 +25,9 @@ const CoursePage = () => {
     const [loading, setLoading] = useState(true);
     const [enrolling, setEnrolling] = useState(false);
     const [payModal, setPayModal] = useState(null); // { checkout_url, amount, provider }
+    const [couponInput, setCouponInput] = useState('');
+    const [couponInfo, setCouponInfo] = useState(null); // { valid, discount_percentage, discounted_price, message }
+    const [couponLoading, setCouponLoading] = useState(false);
 
     const iconIdx = Number(id) % COURSE_ICONS.length || 0;
     const icon = COURSE_ICONS[iconIdx];
@@ -68,23 +71,33 @@ const CoursePage = () => {
                 const res = await enrollCourse(course.id);
                 if (res.data.detail === 'Successfully enrolled') setEnrolled(true);
             } else {
-                // To'lovli kurs — Payme order yarat
-                const res = await api.post('/payment/payme/order/', { course_id: course.id });
-                if (res.data.enrolled) {
-                    setEnrolled(true);
-                } else {
-                    setPayModal({
-                        checkout_url: res.data.checkout_url,
-                        amount: res.data.amount,
-                        provider: 'payme',
-                    });
-                }
+                // Open modal immediately — order is created when user clicks pay
+                setPayModal({ amount: course.price });
             }
         } catch (err) {
             console.error('Enroll error:', err.response?.data);
         } finally {
             setEnrolling(false);
         }
+    };
+
+    const handleCoupon = async () => {
+        if (!couponInput.trim()) return;
+        setCouponLoading(true);
+        try {
+            const res = await api.post('/placement/coupon/', { code: couponInput.trim(), course_id: id });
+            setCouponInfo(res.data);
+        } catch (e) {
+            setCouponInfo({ valid: false, message: e.response?.data?.error || 'Kupon topilmadi' });
+        } finally {
+            setCouponLoading(false);
+        }
+    };
+
+    const closePayModal = () => {
+        setPayModal(null);
+        setCouponInput('');
+        setCouponInfo(null);
     };
 
     if (loading) return (
@@ -123,37 +136,92 @@ const CoursePage = () => {
             <div style={{ fontSize: 48, marginBottom: 12 }}>💳</div>
             <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>To'lov</h3>
             <p style={{ color: 'var(--text-secondary)', marginBottom: 4 }}>{course.title}</p>
-            <div style={{
-              fontSize: 28, fontWeight: 800,
-              color: 'var(--primary-400)',
-              marginBottom: 24,
-            }}>
-              {Number(payModal.amount).toLocaleString('fr-FR')} so'm
+            <div style={{ marginBottom: 20 }}>
+              {couponInfo?.valid ? (
+                <>
+                  <div style={{ fontSize: 16, color: 'var(--text-tertiary)', textDecoration: 'line-through' }}>
+                    {Number(payModal.amount).toLocaleString('fr-FR')} so'm
+                  </div>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: '#22c55e' }}>
+                    {Number(couponInfo.discounted_price).toLocaleString('fr-FR')} so'm
+                  </div>
+                  <div style={{ fontSize: 13, color: '#22c55e', marginTop: 2 }}>
+                    -{couponInfo.percentage}% chegirma qo'llanildi!
+                  </div>
+                </>
+              ) : (
+                <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--primary-400)' }}>
+                  {Number(payModal.amount).toLocaleString('fr-FR')} so'm
+                </div>
+              )}
+            </div>
+
+            {/* Kupon input */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input
+                  value={couponInput}
+                  onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponInfo(null); }}
+                  onKeyDown={e => e.key === 'Enter' && handleCoupon()}
+                  placeholder="Kupon kodi (masalan: PDM-XXXXXXXX)"
+                  style={{
+                    flex: 1, padding: '9px 12px', borderRadius: 8, fontSize: 13,
+                    background: 'var(--bg)', border: '1px solid var(--border)',
+                    color: 'var(--text-primary)', outline: 'none',
+                  }}
+                />
+                <button
+                  onClick={handleCoupon}
+                  disabled={couponLoading || !couponInput.trim()}
+                  style={{
+                    padding: '9px 14px', borderRadius: 8, fontWeight: 600, fontSize: 13,
+                    background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                    border: 'none', color: '#fff', cursor: 'pointer',
+                    opacity: couponLoading || !couponInput.trim() ? 0.5 : 1,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {couponLoading ? '...' : 'Tekshirish'}
+                </button>
+              </div>
+              {couponInfo && !couponInfo.valid && (
+                <div style={{ fontSize: 12, color: '#ef4444', marginTop: 6, textAlign: 'left' }}>
+                  {couponInfo.message}
+                </div>
+              )}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {/* Payme */}
-              <a
-                href={payModal.checkout_url}
-                target="_blank" rel="noreferrer"
+              <button
+                onClick={async () => {
+                  try {
+                    const body = { course_id: course.id };
+                    if (couponInfo?.valid) body.coupon_code = couponInput;
+                    const r = await api.post('/payment/payme/order/', body);
+                    if (r.data.enrolled) { setEnrolled(true); closePayModal(); }
+                    else if (r.data.checkout_url) { window.open(r.data.checkout_url, '_blank'); closePayModal(); }
+                  } catch (e) { console.error(e); }
+                }}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                   padding: '13px 0', borderRadius: 10, fontWeight: 700, fontSize: 15,
-                  background: '#00CAAB', color: '#fff', textDecoration: 'none',
+                  background: '#00CAAB', color: '#fff', border: 'none', cursor: 'pointer',
                 }}
-                onClick={() => setPayModal(null)}
               >
                 <span style={{ fontSize: 20 }}>💚</span> Payme orqali to'lash
-              </a>
+              </button>
 
               {/* Click */}
               <button
                 onClick={async () => {
                   try {
-                    const r = await api.post('/payment/click/order/', { course_id: course.id });
+                    const body = { course_id: course.id };
+                    if (couponInfo?.valid) body.coupon_code = couponInput;
+                    const r = await api.post('/payment/click/order/', body);
                     if (r.data.checkout_url) {
                       window.open(r.data.checkout_url, '_blank');
-                      setPayModal(null);
+                      closePayModal();
                     }
                   } catch (e) { console.error(e); }
                 }}
@@ -167,7 +235,7 @@ const CoursePage = () => {
               </button>
 
               <button
-                onClick={() => setPayModal(null)}
+                onClick={closePayModal}
                 className="btn btn-outline-secondary"
                 style={{ marginTop: 4 }}
               >
@@ -330,7 +398,6 @@ const CoursePage = () => {
                         </h4>
 
                         {[
-                            { label: "O'qituvchi", value: course.instructor_name || 'TBA' },
                             { label: 'Daraja', value: course.level || 'Noaniq' },
                             { label: 'Darslar', value: `${lessons.length} ta` },
                             { label: 'Kategoriya', value: course.category_name || '—' },

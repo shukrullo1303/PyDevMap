@@ -84,6 +84,15 @@ const Navigation = () => {
                                 Bilimni baholash
                             </Link>
                         )}
+                        {user && (
+                            <Link to="/ai-advisor" className={`nav-btn ${isActive('/ai-advisor') ? 'active' : ''}`} style={{
+                                background: isActive('/ai-advisor') ? undefined : 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))',
+                                borderColor: 'rgba(168,85,247,0.4)',
+                            }}>
+                                <span style={{ fontSize: 13 }}>🤖</span>
+                                Maslahatchi
+                            </Link>
+                        )}
                     </div>
                 </div>
 
