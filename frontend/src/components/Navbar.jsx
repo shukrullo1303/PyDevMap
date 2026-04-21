@@ -132,15 +132,15 @@ const Navigation = () => {
                                 {user.username || user.email}
                             </Link>
                             <button onClick={handleLogout} style={{
-                                background: 'none',
-                                border: '1px solid var(--border)',
-                                color: 'var(--text-secondary)',
+                                background: 'rgba(239,68,68,0.1)',
+                                border: '1px solid rgba(239,68,68,0.4)',
+                                color: '#ef4444',
                                 borderRadius: 8, padding: '5px 12px',
                                 fontSize: 13, cursor: 'pointer',
-                                whiteSpace: 'nowrap',
+                                whiteSpace: 'nowrap', fontWeight: 600,
                             }}
-                            onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = '#ef444440'; }}
-                            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+                            onMouseEnter={e => { e.currentTarget.style.background = '#ef4444'; e.currentTarget.style.color = '#fff'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = '#ef4444'; }}
                             >
                                 Chiqish
                             </button>
