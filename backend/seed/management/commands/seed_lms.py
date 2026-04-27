@@ -550,7 +550,7 @@ PYTHON_COURSES = [
                     "    return c\n\n"
                     "print(eng_katta(10, 25, 15))  # 25"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=9Os0o3wzS_I",
+                "video_url": "https://www.youtube.com/watch?v=VLy7YJAk9CE",
             },
             {
                 "title": "Lambda Funksiyalar",
@@ -733,7 +733,7 @@ PYTHON_COURSES = [
                     "# O'yinni ishga tushirish:\n"
                     "sonlar_oyini()"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                "video_url": "https://www.youtube.com/watch?v=J9RQcF7hhgA",
             },
         ],
         "quiz": {
@@ -1045,7 +1045,7 @@ PYTHON_COURSES = [
                     "ball_qo_sh('Sarvar', 78)\n"
                     "hisobot()"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                "video_url": "https://www.youtube.com/watch?v=6e8IqXVZUBk",
             },
         ],
         "quiz": {
@@ -1386,7 +1386,7 @@ PYTHON_COURSES = [
                     "h.chiqim(200000)\n"
                     "h.ko_chirma()"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                "video_url": "https://www.youtube.com/watch?v=BRssQPHZMrc",
             },
         ],
         "quiz": {
@@ -1702,7 +1702,7 @@ PYTHON_COURSES = [
                     "ko_rsat()\n"
                     "qidir('Ali Karimov')"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                "video_url": "https://www.youtube.com/watch?v=ZjavTGclYRQ",
             },
         ],
         "quiz": {
@@ -1903,7 +1903,7 @@ PYTHON_COURSES = [
                     "        queryset.update(nashr_etilgan=True)\n"
                     "    nashr_et.short_description = 'Tanlanganlari nashr et'"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=_uQrJ0TkZlc",
+                "video_url": "https://www.youtube.com/watch?v=WSl0rOCw2_s",
             },
             {
                 "title": "Forms va Validatsiya",
@@ -2075,7 +2075,7 @@ PYTHON_COURSES = [
                     "router.register('posts', PostViewSet)\n"
                     "urlpatterns = router.urls"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                "video_url": "https://www.youtube.com/watch?v=6tT3OBBWhCE",
             },
         ],
         "quiz": {
@@ -2388,7 +2388,7 @@ PYTHON_COURSES = [
                     "plt.savefig('tahlil.png')\n"
                     "print('Grafik saqlandi: tahlil.png')"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                "video_url": "https://www.youtube.com/watch?v=nrLLw5nL_ck",
             },
         ],
         "quiz": {
@@ -2710,7 +2710,7 @@ PYTHON_COURSES = [
                     "print(f'R2: {r2_score(y_test, y_pred):.4f}')\n"
                     "print(f'RMSE: {np.sqrt(mean_squared_error(y_test, y_pred)):.0f}')"
                 ),
-                "video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                "video_url": "https://www.youtube.com/watch?v=Wqmtf9SA_kk",
             },
         ],
         "quiz": {

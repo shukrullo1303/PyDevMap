@@ -14,7 +14,7 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = LessonModel
-        fields = ['id', 'title', 'order', 'video_url', 'content',
+        fields = ['id', 'title', 'order', 'video_url', 'video_file', 'content',
                   'course_id', 'created_at', 'updated_at',
                   'quizzes', 'progress_records', 'next_lesson_id', 'prev_lesson_id',
                   'required_task_id', 'required_task_title']

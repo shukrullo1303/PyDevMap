@@ -9,6 +9,7 @@ class LessonModel(BaseModel):
     order = models.PositiveIntegerField()
     content = models.TextField()
     video_url = models.URLField(blank=True, null=True)
+    video_file = models.FileField(upload_to='lessons/videos/', blank=True, null=True)
     required_task = models.ForeignKey(
         'TaskModel', on_delete=models.SET_NULL,
         null=True, blank=True, related_name='required_in_lessons'

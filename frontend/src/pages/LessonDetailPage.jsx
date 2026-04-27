@@ -104,8 +104,18 @@ export default function LessonDetailPage() {
 
       <h1 style={{ marginBottom: 20 }}>{lesson.title}</h1>
 
-      {/* YouTube video */}
-      {lesson.video_url && (() => {
+      {/* Video darslik */}
+      {lesson.video_file ? (
+        <div className="video-container" style={{ marginBottom: 24 }}>
+          <video
+            controls
+            style={{ width: '100%', borderRadius: 12, maxHeight: 480, background: '#000' }}
+            src={lesson.video_file}
+          >
+            Brauzeringiz video formatini qo'llab-quvvatlamaydi.
+          </video>
+        </div>
+      ) : lesson.video_url && (() => {
         const watchMatch = lesson.video_url.match(/youtube\.com\/watch\?v=([^&]+)/);
         const shortMatch = lesson.video_url.match(/youtu\.be\/([^?]+)/);
         const videoId = watchMatch?.[1] || shortMatch?.[1];
