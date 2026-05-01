@@ -4,7 +4,6 @@ __pycache__/
 .idea/
 .DS_Store
 *.log
-# *.sqlite3
 *.env
 *.egg-info/
 dist/
@@ -12,4 +11,3 @@ build/
 *.egg
 *.pyo
 *.pyd
-/.claude

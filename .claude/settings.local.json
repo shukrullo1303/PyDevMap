@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python manage.py shell *)",
+      "Bash(python manage.py migrate *)",
+      "Bash(python manage.py makemigrations *)",
+      "Bash(python manage.py runserver *)",
+      "Bash(python manage.py createsuperuser *)",
+      "Bash(pip install *)",
+      "Bash(pip freeze *)",
+      "EditFile(*.py)",
+      "EditFile(*.json)",
+      "EditFile(*.md)",
+      "ReadFile(*)",
+      "WriteFile(*)",
+      "*",
+      "WebSearch",
+      "Bash(sed -n '1042,1052p' \"c:/Users/User/Desktop/python loyihalar/PyDevMap/backend/seed/management/commands/seed_lms.py\")",
+      "Bash(sed -n '1383,1393p' \"c:/Users/User/Desktop/python loyihalar/PyDevMap/backend/seed/management/commands/seed_lms.py\")",
+      "Bash(sed -n '1699,1709p' \"c:/Users/User/Desktop/python loyihalar/PyDevMap/backend/seed/management/commands/seed_lms.py\")",
+      "Bash(sed -n '1900,1910p' \"c:/Users/User/Desktop/python loyihalar/PyDevMap/backend/seed/management/commands/seed_lms.py\")",
+      "Bash(sed -n '2072,2082p' \"c:/Users/User/Desktop/python loyihalar/PyDevMap/backend/seed/management/commands/seed_lms.py\")",
+      "Bash(sed -n '2385,2395p' \"c:/Users/User/Desktop/python loyihalar/PyDevMap/backend/seed/management/commands/seed_lms.py\")",
+      "Bash(sed -n '2707,2717p' \"c:/Users/User/Desktop/python loyihalar/PyDevMap/backend/seed/management/commands/seed_lms.py\")"
+    ]
+  }
+}
